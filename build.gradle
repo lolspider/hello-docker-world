@@ -19,7 +19,6 @@ apply plugin: 'io.spring.dependency-management'
 
 bootJar {
     baseName = 'hello-docker-world'
-    version =  '0.7.0'
 }
 
 
