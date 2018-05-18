@@ -2,9 +2,6 @@ pipeline {
     agent any
     stages {
         stage("git checkout tag") {
-            when {
-              environment ignoreCase: true, name: 'inventory', value: 'stage/hosts'
-            }
             steps {
                 script {
                     sh 'git checkout "$tagversion"'
@@ -12,9 +9,6 @@ pipeline {
             }
         }
         stage("gradle build") {
-            when {
-              environment ignoreCase: true, name: 'inventory', value: 'stage/hosts'
-            }
             steps {
                 script {
                     sh './gradlew build'
@@ -22,9 +16,6 @@ pipeline {
             }
         }
 	       stage("build docker image") {
-            when {
-              environment ignoreCase: true, name: 'inventory', value: 'stage/hosts'
-            }
             steps {
 		            script {
 		                sh 'docker build -t lolspider/hello-docker-world:"$tagversion" .'
@@ -32,13 +23,9 @@ pipeline {
             }
         }
 	       stage("push docker image") {
-            when {
-              environment ignoreCase: true, name: 'inventory', value: 'stage/hosts'
-            }
             steps {
 		            script {
-		                // sh 'docker push lolspider/hello-docker-world:"$tagversion"'
-                    echo 'pushing "$tagversion"'
+		                sh 'docker push lolspider/hello-docker-world:"$tagversion"'
                 }
             }
         }
