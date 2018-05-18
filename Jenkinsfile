@@ -8,19 +8,24 @@ pipeline {
                 }
             }
         }
-	stage("build image") {
-	    steps {
-		script {
-		    sh 'docker build -t lolspider/hello-docker-world:"$tagversion" .'
-   	        }
+	       stage("build docker image") {
+	           steps {
+		            script {
+		                sh 'docker build -t lolspider/hello-docker-world:"$tagversion" .'
+   	            }
             }
         }
-	stage("push image") {
-	    steps {
-		script {
-		    sh 'docker push lolspider/hello-docker-world:"$tagversion"'
+	       stage("push docker image") {
+	           steps {
+		            script {
+		                sh 'docker push lolspider/hello-docker-world:"$tagversion"'
                 }
             }
         }
+        stage("git clone ansible playbook") {
+              steps {
+                    git credentialsId: '5fbf29ca-18b1-462c-87c8-ec8f88a4788e', url: 'https://github.com/lolspider/ansible-shop.git'
+           }
+       }
     }
 }
