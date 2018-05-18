@@ -3,6 +3,9 @@ pipeline {
     stages {
         stage("git checkout tag") {
             steps {
+                when {
+                  environment ignoreCase: true, name: 'inventory', value: 'stage/hosts'
+                }
                 script {
                     sh 'git checkout "$tagversion"'
                 }
@@ -10,30 +13,47 @@ pipeline {
         }
         stage("gradle build") {
             steps {
+                when {
+                  environment ignoreCase: true, name: 'inventory', value: 'stage/hosts'
+                }
                 script {
                     sh './gradlew build'
                 }
             }
         }
 	       stage("build docker image") {
-	           steps {
+	          steps {
+                when {
+                  environment ignoreCase: true, name: 'inventory', value: 'stage/hosts'
+                }
 		            script {
 		                sh 'docker build -t lolspider/hello-docker-world:"$tagversion" .'
    	            }
             }
         }
 	       stage("push docker image") {
-	           steps {
+	          steps {
+                when {
+                  environment ignoreCase: true, name: 'inventory', value: 'stage/hosts'
+                }
 		            script {
-		                // sh 'docker push lolspider/hello-docker-world:"$tagversion"'
-                    echo 'push lolspider/hello-docker-world:"tagversion"'
+		                sh 'docker push lolspider/hello-docker-world:"$tagversion"'
                 }
             }
         }
         stage("git clone ansible playbook") {
-              steps {
+            steps {
                     git credentialsId: '5fbf29ca-18b1-462c-87c8-ec8f88a4788e', url: 'https://github.com/lolspider/ansible-shop.git'
-           }
-       }
+            }
+        }
+        stage("deploy the project and check if can be access") {
+            steps {
+                script {
+                    sh 'git-crypt unlock /var/lib/jenkins/gpgkey'
+                    sh 'sudo chmod 600 ssh_keys/*'
+                    sh 'ansible-playbook -i $inventory --extra-vars "tagversion=$tagversion" -u vagrant -b $playbook'
+                }
+            }
+        }
     }
 }
