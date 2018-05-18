@@ -25,7 +25,8 @@ pipeline {
 	       stage("push docker image") {
 	           steps {
 		            script {
-		                sh 'docker push lolspider/hello-docker-world:"$tagversion"'
+		                ##sh 'docker push lolspider/hello-docker-world:"$tagversion"'
+                    echo 'push lolspider/hello-docker-world:"tagversion"'
                 }
             }
         }
