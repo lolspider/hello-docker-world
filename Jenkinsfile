@@ -1,6 +1,13 @@
 pipeline {
     agent any
     stages {
+        stage("git checkout tag") {
+            steps {
+                script {
+                    sh 'git checkout "$tagversion"'
+                }
+            }
+        }
         stage("gradle build") {
             steps {
                 script {
