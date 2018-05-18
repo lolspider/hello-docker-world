@@ -37,7 +37,8 @@ pipeline {
             }
             steps {
 		            script {
-		                sh 'docker push lolspider/hello-docker-world:"$tagversion"'
+		                // sh 'docker push lolspider/hello-docker-world:"$tagversion"'
+                    echo 'pushing "$tagversion"'
                 }
             }
         }
