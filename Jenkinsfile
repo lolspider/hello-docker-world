@@ -11,14 +11,14 @@ pipeline {
 	       stage("build docker image") {
             steps {
 		            script {
-		                sh 'docker build -t lolspider/hello-docker-world:"${env.BUILD_ID}" .'
+		                sh 'docker build -t lolspider/hello-docker-world:${env.BUILD_ID} .'
    	            }
             }
         }
 	       stage("push docker image") {
             steps {
 		            script {
-		                sh 'docker push lolspider/hello-docker-world:"${env.BUILD_ID}"'
+		                sh 'docker push lolspider/hello-docker-world:${env.BUILD_ID}'
                 }
             }
         }
