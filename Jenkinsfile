@@ -1,13 +1,6 @@
 pipeline {
     agent any
     stages {
-        stage("git checkout tag") {
-            steps {
-                script {
-                    sh 'git checkout "$tagversion"'
-                }
-            }
-        }
         stage("gradle build") {
             steps {
                 script {
@@ -18,14 +11,14 @@ pipeline {
 	       stage("build docker image") {
             steps {
 		            script {
-		                sh 'docker build -t lolspider/hello-docker-world:"$tagversion" .'
+		                sh 'docker build -t lolspider/hello-docker-world:"${env.BUILD_NUMBER}" .'
    	            }
             }
         }
 	       stage("push docker image") {
             steps {
 		            script {
-		                sh 'docker push lolspider/hello-docker-world:"$tagversion"'
+		                sh 'docker push lolspider/hello-docker-world:"${env.BUILD_NUMBER}"'
                 }
             }
         }
@@ -39,7 +32,7 @@ pipeline {
                 script {
                     sh 'git-crypt unlock /var/lib/jenkins/gpgkey'
                     sh 'sudo chmod 600 ssh_keys/*'
-                    sh 'ansible-playbook -i $inventory --extra-vars "tagversion=$tagversion" -u vagrant -b $playbook'
+                    sh 'ansible-playbook -i $inventory --extra-vars "tagversion=${env.BUILD_NUMBER}" -u vagrant -b $playbook'
                 }
             }
         }
