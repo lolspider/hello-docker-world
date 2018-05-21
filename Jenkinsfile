@@ -1,8 +1,5 @@
 pipeline {
     agent any
-    environment {
-        BUILD_ID=${env.BUILD_ID}
-    }
 
     stages {
         stage("gradle build") {
@@ -15,14 +12,14 @@ pipeline {
 	       stage("build docker image") {
             steps {
 		            script {
-		                sh 'docker build -t lolspider/hello-docker-world:$BUILD_ID .'
+		                sh "docker build -t lolspider/hello-docker-world:${env.BUILD_ID} ."
    	            }
             }
         }
 	       stage("push docker image") {
             steps {
 		            script {
-		                sh 'docker push lolspider/hello-docker-world:$BUILD_ID'
+		                sh "docker push lolspider/hello-docker-world:${env.BUILD_ID}"
                 }
             }
         }
@@ -36,7 +33,7 @@ pipeline {
                 script {
                     sh 'git-crypt unlock /var/lib/jenkins/gpgkey'
                     sh 'sudo chmod 600 ssh_keys/*'
-                    sh 'ansible-playbook -i $inventory --extra-vars "tagversion=$BUILD_ID" -u vagrant -b $playbook'
+                    sh 'ansible-playbook -i $inventory --extra-vars "tagversion=${env.BUILD_ID}" -u vagrant -b $playbook'
                 }
             }
         }
