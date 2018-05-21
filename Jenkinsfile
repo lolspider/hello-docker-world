@@ -1,6 +1,9 @@
 pipeline {
     agent any
-    BUILD_ID=${env.BUILD_ID}
+    environment {
+        BUILD_ID=${env.BUILD_ID}
+    }
+
     stages {
         stage("gradle build") {
             steps {
