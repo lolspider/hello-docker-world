@@ -31,9 +31,9 @@ pipeline {
         stage("deploy the project and check if can be access") {
             steps {
                 script {
-                    sh 'git-crypt unlock /var/lib/jenkins/gpgkey'
-                    sh 'sudo chmod 600 ssh_keys/*'
-                    sh 'ansible-playbook -i $inventory --extra-vars "tagversion=${env.BUILD_ID}" -u vagrant -b $playbook'
+                    sh "git-crypt unlock /var/lib/jenkins/gpgkey"
+                    sh "sudo chmod 600 ssh_keys/*"
+                    sh "ansible-playbook -i $inventory --extra-vars 'tagversion=${env.BUILD_ID}' -u vagrant -b $playbook"
                 }
             }
         }
