@@ -1,0 +1,19 @@
+pipeline {
+    agent any
+    stages{
+        stage("clone ansible playbook") {
+            steps {
+                git credentialsId: '5fbf29ca-18b1-462c-87c8-ec8f88a4788e', url: 'https://github.com/lolspider/ansible-shop.git'
+            }
+        }
+        stage("run ansible-playbook to deploy the project and check") {
+            steps {
+                script {
+                    sh "git-crypt unlock /var/lib/jenkins/gpgkey"
+                    sh "sudo chmod 600 ssh_keys/*"
+                    sh "ansible-playbook -i $inventory --extra-vars 'tagversion=$BUILD_NUMBER' -u vagrant -b $playbook"
+                }
+            }
+        }
+    }
+}
