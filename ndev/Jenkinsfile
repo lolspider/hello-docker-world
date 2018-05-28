@@ -6,12 +6,12 @@ pipeline {
                 git credentialsId: '5fbf29ca-18b1-462c-87c8-ec8f88a4788e', url: 'https://github.com/lolspider/ansible-shop.git'
             }
         }
-        stage("run ansible-playbook to deploy the project and check") {
+        stage("run playbook to deploy project and check it") {
             steps {
-                script {
-                    sh "git-crypt unlock /var/lib/jenkins/gpgkey"
+		withCredentials([file(credentialsId: 'git-crypt', variable: 'git_crypt')]) {
+                    sh 'git-crypt unlock "$git_crypt"'
                     sh "sudo chmod 600 ssh_keys/*"
-                    sh "ansible-playbook -i $inventory --extra-vars 'tagversion=$BUILD_NUMBER' -u vagrant -b $playbook"
+                    sh "ansible-playbook -i $inventory --extra-vars 'BUILD_ID=${env.BUILD_ID}' -u vagrant -b $playbook"
                 }
             }
         }
