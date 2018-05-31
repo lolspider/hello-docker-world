@@ -11,10 +11,10 @@ pipeline {
         }
 	       stage("build and push docker image") {
             steps {
-                  withDockerRegistry([credentialsId: '5fbf29ca-18b1-462c-87c8-ec8f88a4788e', url: 'https://hub.docker.com']) {
+		withDockerRegistry(credentialsId: 'dockerhub') {
                   sh "docker build -t lolspider/hello-docker-world:${env.BUILD_ID} ."
                   sh "docker push lolspider/hello-docker-world:${env.BUILD_ID}"
-              }
+                }
             }
         }
         stage("clone ansible playbook") {
