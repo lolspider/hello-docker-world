@@ -11,7 +11,7 @@ pipeline {
         }
 	       stage("build and push docker image") {
             steps {
-		withDockerRegistry(credentialsId: 'dockerhub') {
+		withDockerRegistry(credentialsId: 'dockerhub', url: 'https://hub.docker.com/') {
                   sh "docker build -t lolspider/hello-docker-world:${env.BUILD_ID} ."
                   sh "docker push lolspider/hello-docker-world:${env.BUILD_ID}"
                 }
