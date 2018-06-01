@@ -1,6 +1,5 @@
 pipeline {
     agent any
-
     stages {
         stage("gradle build") {
             steps {
@@ -10,13 +9,16 @@ pipeline {
             }
         }
         stage("build and push docker image") {
+            agent {
+                dockerfile {
+        		    filename 'Dockerfile'
+        		    additionalBuildArgs '-t lolspider/hello-docker-world:${env.BUILD_ID}'
+                }
+            }    
             steps {
-               scirpt {
-                     sh "docker build -t lolspider/hello-docker-world:${env.BUILD_ID} ."
-		     withDockerRegistry(credentialsId: 'dockerhub', url: 'https://docker.io') {
-                        sh "docker push lolspider/hello-docker-world:${env.BUILD_ID}"
-                     }
-               }
+		        withDockerRegistry(credentialsId: 'dockerhub', url: 'https://docker.io') {
+                    sh "docker push lolspider/hello-docker-world:${env.BUILD_ID}"
+                }
             }
         }
         stage("clone ansible playbook") {
@@ -26,17 +28,17 @@ pipeline {
         }
         stage("deploy to dev env") {
             steps {
-                 withCredentials([file(credentialsId: 'git-crypt', variable: 'git_crypt')]) {
-                 sh 'git-crypt unlock "$git_crypt"'
-                 sh "sudo chmod 600 ssh_keys/*"
-                 sh "ansible-playbook -i inventories/staging/hosts --extra-vars 'BUILD_ID=${env.BUILD_ID}'  hello-docker-world.yml"
-		          }
+                withCredentials([file(credentialsId: 'git-crypt', variable: 'git_crypt')]) {
+                sh 'git-crypt unlock "$git_crypt"'
+                sh "sudo chmod 600 ssh_keys/*"
+                sh "ansible-playbook -i inventories/staging/hosts --extra-vars 'BUILD_ID=${env.BUILD_ID}'  hello-docker-world.yml"
+		        }
             }
         }
     }
     post {
-      always {
-        sh 'git-crypt lock'
-      }
-    }
+        always {
+          sh 'git-crypt lock'
+        }
+    }   
 }
