@@ -10,6 +10,7 @@ pipeline {
         }
         stage("push docker image") {
             agent {
+              checkout scm
               dockerfile {
                 filename 'Dockerfile'
                 args '-t lolspider/hello-docker-world:${env.BUILD_ID}'
