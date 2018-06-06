@@ -1,8 +1,7 @@
 pipeline {
-    agent none
+  agent { dockerfile true }
     stages {
         stage("gradle build") {
-    	    agent any
             steps {
                 script {
                     sh './gradlew build'
@@ -10,13 +9,6 @@ pipeline {
             }
         }
         stage("push docker image") {
-          agent {
-              dockerfile {
-                  additionalBuildArgs '-t lolspider/hello-docker-world:${env.BUILD_ID}'
-                  args '-t lolspider/hello-docker-world:${env.BUILD_ID}'
-                  filename 'Dockerfile'
-              }
-          }
             steps {
 	        withDockerRegistry(credentialsId: 'dockerhub', url: 'https://docker.io') {
                     sh "docker push lolspider/hello-docker-world:${env.BUILD_ID}"
@@ -24,13 +16,11 @@ pipeline {
             }
         }
         stage("clone ansible playbook") {
-            agent any
             steps {
                 git credentialsId: '5fbf29ca-18b1-462c-87c8-ec8f88a4788e', url: 'https://github.com/lolspider/ansible-shop.git'
             }
         }
         stage("deploy to dev env") {
-            agent any
             steps {
                 withCredentials([file(credentialsId: 'git-crypt', variable: 'git_crypt')]) {
                   sh 'git-crypt unlock "$git_crypt"'
