@@ -12,7 +12,7 @@ pipeline {
             agent {
               dockerfile {
                 filename 'Dockerfile'
-                additionalBuildArgs '-t lolspider/hello-docker-world:${env.BUILD_ID}'
+                args '-t lolspider/hello-docker-world:${env.BUILD_ID}'
               }
             }
             steps {
