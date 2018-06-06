@@ -14,9 +14,9 @@ pipeline {
               dockerfile {
                   additionalBuildArgs '-t lolspider/hello-docker-world:${env.BUILD_ID}'
                   args '-t lolspider/hello-docker-world:${env.BUILD_ID}'
-                  filename 'Dockerfile'true
+                  filename 'Dockerfile'
               }
-            }  
+            }
             steps {
 	        withDockerRegistry(credentialsId: 'dockerhub', url: 'https://docker.io') {
                     sh "docker push lolspider/hello-docker-world:${env.BUILD_ID}"
