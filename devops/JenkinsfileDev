@@ -11,12 +11,12 @@ pipeline {
         }
         stage("push docker image") {
             agent {
-		        dockerfile {
-			        additionalBuildArgs  '-t lolspider/hello-docker-world:${env.BUILD_ID}'
-		        }
+	        dockerfile {
+		        additionalBuildArgs  '-t lolspider/hello-docker-world:${env.BUILD_ID}'
+	        }
             }
             steps {
-		        withDockerRegistry(credentialsId: 'dockerhub', url: 'https://docker.io') {
+	        withDockerRegistry(credentialsId: 'dockerhub', url: 'https://docker.io') {
                     sh "docker push lolspider/hello-docker-world:${env.BUILD_ID}"
                 }
             }
@@ -34,7 +34,7 @@ pipeline {
                   sh 'git-crypt unlock "$git_crypt"'
                   sh "sudo chmod 600 ssh_keys/*"
                   sh "ansible-playbook -i inventories/staging/hosts --extra-vars 'BUILD_ID=${env.BUILD_ID}'  hello-docker-world.yml"
-		            }
+                }
             }
         }
     }
