@@ -11,7 +11,7 @@ pipeline {
         }
         stage("push docker image") {
             agent { dockerfile true }
-		       ## additionalBuildArgs  '-t lolspider/hello-docker-world:${env.BUILD_ID}'
+	  // additionalBuildArgs  '-t lolspider/hello-docker-world:${env.BUILD_ID}'
             steps {
 	        withDockerRegistry(credentialsId: 'dockerhub', url: 'https://docker.io') {
                     sh "docker push lolspider/hello-docker-world:${env.BUILD_ID}"
