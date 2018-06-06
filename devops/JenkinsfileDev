@@ -8,18 +8,20 @@ pipeline {
                 }
             }
         }
-        stage("push docker image") {
+        stage("build docker image") {
             agent {
-              checkout scm
               dockerfile {
                 filename 'Dockerfile'
                 args '-t lolspider/hello-docker-world:${env.BUILD_ID}'
               }
             }
+        }
+        stage("push docker image") {
+        
             steps {
-	        withDockerRegistry(credentialsId: 'dockerhub', url: 'https://docker.io') {
+	               withDockerRegistry(credentialsId: 'dockerhub', url: 'https://docker.io') {
                     sh "docker push lolspider/hello-docker-world:${env.BUILD_ID}"
-                }
+                 }
             }
         }
         stage("clone ansible playbook") {
