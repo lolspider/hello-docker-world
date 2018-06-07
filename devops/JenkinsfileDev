@@ -1,5 +1,5 @@
 pipeline {
-  agent any
+  agent { label 'docker' }
     stages {
         stage("gradle build") {
             steps {
@@ -9,14 +9,8 @@ pipeline {
             }
         }
         stage("push docker image") {
-            agent {
-              dockerfile {
-                filename 'Dockerfile'
-                additionalBuildArgs '-t lolspider/hello-docker-world:${env.BUILD_ID}'
-                reuseNode true
-              }
-            }
             steps {
+                 sh "docker build -t lolspider/hello-docker-world:${env.BUILD_ID}"
 	               withDockerRegistry(credentialsId: 'dockerhub', url: 'https://docker.io') {
                     sh "docker push lolspider/hello-docker-world:${env.BUILD_ID}"
                  }
