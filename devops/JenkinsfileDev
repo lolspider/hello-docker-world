@@ -1,5 +1,7 @@
 pipeline {
-  agent { label 'docker' }
+  agent {
+    image 'jenkins:customsized'
+  }
     stages {
         stage("gradle build") {
             steps {
