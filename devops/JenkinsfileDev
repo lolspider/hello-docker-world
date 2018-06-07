@@ -1,14 +1,20 @@
 pipeline {
-    agent {
-        docker {
-            image 'jenkins:customized'
-        }
-    }
+    agent any
     stages {
         stage("gradle build") {
+            agent {
+                docker {
+                    image 'gradle:apline'
+                }
+            }
             steps {
                 script {
-                    sh './gradlew build'
+                    sh 'gradle build'
+                }
+            }
+            post {
+                always {
+                    archiveArtifacts artifacts: 'build/libs/*.jar', fingerprint: true
                 }
             }
         }
