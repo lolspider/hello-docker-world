@@ -5,7 +5,7 @@ pipeline {
             agent {
                 docker {
                     image 'gradle:alpine'
-                    args '-v /root/.gradle:/root/.gradle'
+                    args '-v $HOME/.gradle:/root/.gradle'
                 }
             }
             steps {
@@ -19,6 +19,17 @@ pipeline {
                 }
             }
         }
+        stages {
+         stage('Copy Archive') {
+             steps {
+                 script {
+                     step ([$class: 'CopyArtifact',
+                     projectName: 'docker',
+                     filter: "build/libs/*.jar",
+                     target: 'build/libs/']);
+                 }
+             }
+         }
         stage("push docker image") {
             steps {
                  sh "docker build -t lolspider/hello-docker-world:${env.BUILD_ID} ."
