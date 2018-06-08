@@ -4,8 +4,8 @@ pipeline {
         stage("gradle build") {
             agent {
                 docker {
-                    image "gradle:alpine"
-                    args "-v $HOME/.gradle:/root/.gradle"
+                    image 'gradle:alpine'
+                    args '-v $HOME/.gradle:/root/.gradle'
                 }
             }
             steps {
