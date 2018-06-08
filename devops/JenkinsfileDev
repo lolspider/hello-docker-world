@@ -5,7 +5,7 @@ pipeline {
             agent {
                 docker {
                     image 'gradle:alpine'
-                    args '-v $HOME/.gradle:/home/gradle/.gradle'
+                    args '-v "$HOME"/.gradle:/home/gradle/.gradle'
                 }
             }
             steps {
@@ -22,8 +22,8 @@ pipeline {
         stage("push docker image") {
             agent any
             steps {
+                   sh "docker build -t lolspider/hello-docker-world:${env.BUILD_ID} ."
 	                 withDockerRegistry([credentialsId: 'dockerhub', url: "https://docker.io"]) {
-                        sh "docker build -t lolspider/hello-docker-world:${env.BUILD_ID} ."
                         sh "docker push lolspider/hello-docker-world:${env.BUILD_ID}"
                    }
             }
