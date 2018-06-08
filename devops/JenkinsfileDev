@@ -19,7 +19,7 @@ pipeline {
                 }
             }
         }
-         stage('Copy Archive') {
+/*         stage('Copy Archive') {
              steps {
                  script {
                      step ([$class: 'CopyArtifact',
@@ -29,6 +29,7 @@ pipeline {
                  }
              }
          }
+        */
         stage("push docker image") {
             agent any
             steps {
