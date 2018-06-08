@@ -23,10 +23,12 @@ pipeline {
             agent any
             steps {
                  // sh "docker build -t lolspider/hello-docker-world:${env.BUILD_ID} ."
-	                   withDockerRegistry([credentialsId: 'dockerhub', url: "https://docker.io"]) {
-                        def image = docker.build("lolspider/hello-docker-world:${env.BUILD_ID}")
-                        image.push()
+                 withDockerServer([uri: "unix:///var/run/docker.sock"]) {
+	                     withDockerRegistry([credentialsId: 'dockerhub', url: "https://docker.io"]) {
+                          sh "docker build -t lolspider/hello-docker-world:${env.BUILD_ID} ."
+                          sh "docker push lolspider/hello-docker-world:${env.BUILD_ID}"
                  //sh "docker push lolspider/hello-docker-world:${env.BUILD_ID}"
+                      }
                  }
             }
         }
