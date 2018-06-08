@@ -1,5 +1,5 @@
 pipeline {
-    agent any
+    agent none
     stages {
         stage("gradle build") {
             agent {
@@ -15,7 +15,7 @@ pipeline {
             }
             post {
                 always {
-                    archiveArtifacts artifacts: 'build/libs/*.jar', fingerprint: true
+                    archiveArtifacts artifacts: 'build/libs/*.jar'
                 }
             }
         }
@@ -30,6 +30,7 @@ pipeline {
              }
          }
         stage("push docker image") {
+            agent any
             steps {
                  sh "docker build -t lolspider/hello-docker-world:${env.BUILD_ID} ."
 	               withDockerRegistry([credentialsId: 'dockerhub', url: ""]) {
@@ -38,11 +39,13 @@ pipeline {
             }
         }
         stage("clone ansible playbook") {
+            agent any
             steps {
                 git credentialsId: '5fbf29ca-18b1-462c-87c8-ec8f88a4788e', url: 'https://github.com/lolspider/ansible-shop.git'
             }
         }
         stage("deploy to dev env") {
+            agent any
             steps {
                 withCredentials([file(credentialsId: 'git-crypt', variable: 'git_crypt')]) {
                   sh 'git-crypt unlock "$git_crypt"'
