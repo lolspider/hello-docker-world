@@ -25,6 +25,7 @@ pipeline {
                  // sh "docker build -t lolspider/hello-docker-world:${env.BUILD_ID} ."
                 // withDockerServer([uri: "unix:///var/run/docker.sock"]) {
 	                     withDockerRegistry([credentialsId: 'dockerhub', url: "https://docker.io"]) {
+                          echo "this is a echo message"
                           sh "docker build -t lolspider/hello-docker-world:${env.BUILD_ID} ."
                           sh "docker push lolspider/hello-docker-world:${env.BUILD_ID}"
                  //sh "docker push lolspider/hello-docker-world:${env.BUILD_ID}"
