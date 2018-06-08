@@ -19,23 +19,14 @@ pipeline {
                 }
             }
         }
-/*         stage('Copy Archive') {
-             steps {
-                 script {
-                     step ([$class: 'CopyArtifact',
-                     projectName: 'docker',
-                     filter: "build/libs/*.jar",
-                     target: 'build/libs/']);
-                 }
-             }
-         }
-        */
         stage("push docker image") {
             agent any
             steps {
-                 sh "docker build -t lolspider/hello-docker-world:${env.BUILD_ID} ."
-	               withDockerRegistry([credentialsId: 'dockerhub', url: ""]) {
-                    sh "docker push lolspider/hello-docker-world:${env.BUILD_ID}"
+                 // sh "docker build -t lolspider/hello-docker-world:${env.BUILD_ID} ."
+	                   withDockerRegistry([credentialsId: 'dockerhub', url: "https://docker.io"]) {
+                        def image = docker.build("lolspider/hello-docker-world:${env.BUILD_ID}")
+                        image.push()
+                 //sh "docker push lolspider/hello-docker-world:${env.BUILD_ID}"
                  }
             }
         }
